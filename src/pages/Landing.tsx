@@ -1,36 +1,36 @@
-import { ArrowRight, MonitorSmartphone, Split, TerminalSquare } from "lucide-react";
+import { ArrowRight, Boxes, GitBranch, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SITE } from "@/lib/config";
 
 const FEATURES = [
   {
-    icon: MonitorSmartphone,
-    title: "Your machines, your browser",
+    icon: Boxes,
+    title: "Pick where tools run",
     description:
-      "Run Claude Code on your own dev machines and drive it from any web browser — no SSH, no tmux gymnastics.",
+      "Run agent tools on your own machine with a lightweight daemon that dials back to the server, or on managed, ephemeral containers the server provisions per session.",
   },
   {
-    icon: Split,
-    title: "Control / data plane split",
+    icon: GitBranch,
+    title: "GitHub, MCP, and skills",
     description:
-      "A thin worker manages agent lifecycles while each session streams I/O independently, so sessions stay isolated and resilient.",
+      "Connect a GitHub App to run sessions against real repos, add remote MCP servers for more tools, and install skill bundles — all from the Settings page.",
   },
   {
-    icon: TerminalSquare,
-    title: "Built for Claude Code",
+    icon: ShieldCheck,
+    title: "Durable, self-hosted sessions",
     description:
-      "Purpose-built around the Claude Code CLI: session creation, live streaming chat, and worker management out of the box.",
+      "Every session's transcript is journaled server-side and streams live, so you can close the tab and reconnect later. Self-host it yourself, on your own models — no lock-in.",
   },
 ];
 
-const QUICKSTART = `# Install dependencies and build
-make setup && make build
+const QUICKSTART = `# Self-host the server
+git clone https://github.com/blossomstack/horsie.git
+docker compose -f horsie/docker/docker-compose.yml up -d
+# open http://localhost:3789 -> Settings -> add a provider + model
 
-# Run the server
-make dev-server
-
-# In another terminal, connect a worker
-make dev-worker TOKEN=<token> DIR=<path>`;
+# Install the CLI to point it at code on your own machine
+curl -fsSL https://get.horsie.dev | sh
+horsie connect --server https://your-server --workspace .`;
 
 export default function Landing() {
   return (
@@ -41,22 +41,22 @@ export default function Landing() {
           Open source · Self-hosted
         </p>
         <h1 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl">
-          Remote Claude Code sessions,{" "}
-          <span className="text-brand-400">from your browser</span>
+          LLM agent sessions,{" "}
+          <span className="text-brand-400">on your own terms</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-400">
-          Horsie is a web-based interface for managing Claude Code CLI sessions
-          running on your worker machines. Create sessions, chat live, and keep
-          your code exactly where it belongs — on your hardware.
+          Horsie is a self-hosted web app for running LLM agents as durable chat
+          sessions. Open it in a browser, pick a model and a runtime, and chat —
+          with your code and your tools running wherever you say.
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">
-          <Link
-            to="/docs/quickstart"
+          <a
+            href="#quickstart"
             className="flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-brand-400"
           >
             Get started
             <ArrowRight className="size-4" />
-          </Link>
+          </a>
           <a
             href={SITE.githubUrl}
             target="_blank"
@@ -69,7 +69,7 @@ export default function Landing() {
       </section>
 
       {/* Quickstart snippet */}
-      <section className="mx-auto w-full max-w-3xl px-4 pb-24">
+      <section id="quickstart" className="mx-auto w-full max-w-3xl scroll-mt-20 px-4 pb-24">
         <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
           <div className="flex items-center gap-1.5 border-b border-zinc-800 px-4 py-2.5">
             <span className="size-3 rounded-full bg-zinc-700" />
@@ -81,6 +81,22 @@ export default function Landing() {
             <code>{QUICKSTART}</code>
           </pre>
         </div>
+        <p className="mt-4 text-center text-sm text-zinc-500">
+          Full walkthrough in{" "}
+          <Link to="/docs/introduction" className="text-brand-400 hover:underline">
+            the docs
+          </Link>{" "}
+          or the repo's{" "}
+          <a
+            href={SITE.docsUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-brand-400 hover:underline"
+          >
+            user guide
+          </a>
+          .
+        </p>
       </section>
 
       {/* Features */}

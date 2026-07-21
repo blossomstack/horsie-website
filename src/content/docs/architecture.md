@@ -1,54 +1,68 @@
 # Architecture
 
-Horsie is split into a central server and per-machine worker/agent processes,
-with a React frontend for session management and chat.
+`horsie-server` is a single binary: a Rust/Axum HTTP server that serves the web
+UI, terminates session traffic over HTTP + SSE, and accepts runtime
+connections over a WebSocket on the same port.
 
 ```text
-┌─────────────────┐      SSE/HTTP        ┌──────────────────┐
-│   Web Client    │◄───────────────────►│  Horsie Server   │
-│  (React/Vite)   │   /api/* + /events   │  (Rust/Axum)     │
-└─────────────────┘                      └──────────────────┘
-                                           │ Control Plane    │ Data Plane
-                                           │ /ws/control      │ /ws/agent
-                                           ▼                  ▼
-                                    ┌────────────┐    ┌──────────────┐
-                                    │   Worker   │───►│    Agent     │
-                                    │  (control) │    │  (data plane)│
-                                    └────────────┘    └──────────────┘
-                                                             │
-                                                             ▼ spawns
-                                                      ┌──────────────┐
-                                                      │  Claude CLI  │
-                                                      └──────────────┘
+┌─────────────────┐   HTTP + SSE    ┌──────────────────┐
+│   Web Client    │◄───────────────►│  horsie-server   │
+│  (React/Vite)   │    /api/* + /events               │
+└─────────────────┘                 └──────────────────┘
+                                       │
+                                       │ /api/runtime/connect (WebSocket)
+                                       ▼
+                                ┌───────────────┐
+                                │ Runtime vendor │
+                                ├───────────────┤
+                                │ local — a      │
+                                │ daemon on your │
+                                │ own machine    │
+                                ├───────────────┤
+                                │ velos —        │
+                                │ managed        │
+                                │ containers the │
+                                │ server         │
+                                │ provisions     │
+                                └───────────────┘
 ```
 
-## Control plane / data plane split
+## Runtime vendors
 
-Each worker machine runs a two-process architecture:
+Every session's tools run inside a **runtime** — a sandbox where the agent
+reads files, runs commands, and optionally clones repositories. A **runtime
+vendor** is a source of runtimes:
 
-- **Worker** (control plane): connects to the server via `/ws/control`. Manages
-  agent process lifecycle (start, stop, monitor). Does **not** handle session
-  I/O.
-- **Agent** (data plane): spawned by the worker as a child process, one per
-  session. Connects to the server via `/ws/agent`. Runs the Claude CLI and
-  streams I/O directly to the server.
+- **`local`** — you run a `horsie-runtime` daemon on your own machine; it
+  dials the server over an outbound WebSocket and registers as a selectable
+  vendor. The server never reaches into your machine.
+- **`velos`** — the server provisions a fresh, isolated container per session
+  on a [velos](https://github.com/blossomstack/velos) backend and tears it
+  down when the session ends. Supports GitHub repo checkout and skill/plugin
+  bundle installation; `local` doesn't.
 
-This separation keeps the worker a thin process manager while each agent
-handles its own data streaming independently.
+## Two kinds of configuration
+
+The server never mixes these:
+
+- **`config.json`** — deployment/bootstrap only: storage paths, the database
+  location, whether the `local` runtime is allowed. Edited by hand.
+- **The settings database** (SQLite) — everything you tune day to day: model
+  providers and models, runtime vendors, GitHub, MCP servers, skill bundles.
+  Edited from the **Settings** page in the UI.
 
 ## Components
 
 | Component | Tech | Role |
 | --- | --- | --- |
-| Server | Rust, Axum, SQLite (sqlx) | Central hub; manages workers/agents and routes messages between web clients and agents |
-| Worker | Rust | Control plane on dev machines; spawns and monitors agent processes |
-| Agent | Rust | Data plane; one per session; runs Claude CLI and streams I/O |
-| Web | React 19, Vite, Tailwind CSS 4 | Frontend for creating sessions and chatting with Claude |
+| `horsie-server` | Rust, Axum, SQLite (sqlx) | Serves the web UI and API, journals sessions, brokers runtime connections |
+| `horsie-runtime` | Rust | Sandboxed process that runs a session's tools; deployed via the `local` or `velos` vendor |
+| Web UI | React 19, Vite, Tailwind CSS 4 | Session chat, Settings, and admin views |
 
-## Technology stack
-
-- **Rust 1.85** (2024 edition) with **Axum 0.8** and WebSocket support
-- **SQLite** via sqlx for worker and session persistence
-- **React 19** with React Router 7, **Vite 7**, **Tailwind CSS 4**
-- **Bun** as the JavaScript/TypeScript runtime and package manager
-- **Playwright** for E2E tests (requires Node.js)
+The separate `horsie` CLI (workflow/job orchestration with per-job sandboxing)
+shares the `horsie-runtime` binary but is otherwise an independent tool from
+the server above — see the
+[repo README](https://github.com/blossomstack/horsie) for how the pieces
+relate, and the
+[user guide](https://github.com/blossomstack/horsie/tree/main/docs/guide) for
+day-to-day usage of the server.

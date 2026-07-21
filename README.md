@@ -1,9 +1,13 @@
 # horsie-website
 
 The marketing landing page and documentation site for
-[Horsie](https://github.com/blossomstack/horsie) — a web-based interface for
-managing remote Claude Code sessions. This site will also become the entry
-point to the hosted horsie portal (TBD).
+[Horsie](https://github.com/blossomstack/horsie) — a self-hosted web app for
+running LLM agents as durable, browser-based chat sessions. This site will
+also become the entry point to the hosted horsie portal (TBD).
+
+Docs pages here are a light orientation only; the full user guide lives in
+the [repo's `docs/guide/`](https://github.com/blossomstack/horsie/tree/main/docs/guide)
+and isn't duplicated here.
 
 Deployed to [horsie.dev](https://horsie.dev).
 
