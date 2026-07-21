@@ -16,7 +16,6 @@ const rawDocs = import.meta.glob<string>("../content/docs/*.md", {
 
 const DOC_ORDER: { slug: string; title: string }[] = [
   { slug: "introduction", title: "Introduction" },
-  { slug: "quickstart", title: "Quickstart" },
   { slug: "architecture", title: "Architecture" },
 ];
 
