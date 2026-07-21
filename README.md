@@ -1,9 +1,11 @@
 # horsie-website
 
 The marketing landing page and documentation site for
-[Horsie](https://github.com/zhxiaogg/horsie) — a web-based interface for
+[Horsie](https://github.com/blossomstack/horsie) — a web-based interface for
 managing remote Claude Code sessions. This site will also become the entry
 point to the hosted horsie portal (TBD).
+
+Deployed to [horsie.dev](https://horsie.dev).
 
 ## Stack
 
@@ -45,9 +47,17 @@ make check    # lint + build, run before committing
 
 The page is then available at `/docs/<slug>`.
 
+## Deployment
+
+`.github/workflows/deploy.yml` builds and runs `wrangler pages deploy` on
+every push to `main`, direct-upload to the `horsie-website` Cloudflare Pages
+project (no Cloudflare git-integration — see `ops` repo's
+`iac/cloudflare/horsie-website.tf` for the project, `horsie.dev` custom
+domain, and the scoped deploy token).
+
 ## Notes
 
 - The "Portal" nav item is a placeholder until the hosted portal's location is
   decided; set `portalUrl` in `src/lib/config.ts` to enable it.
 - The site uses `BrowserRouter`, so static hosting needs a SPA fallback
-  (rewrite all paths to `index.html`).
+  (rewrite all paths to `index.html`) — handled by `public/_redirects`.
