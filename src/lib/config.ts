@@ -1,7 +1,7 @@
 /** Central place for site-wide links and constants. */
 export const SITE = {
   name: "horsie",
-  tagline: "Self-hosted LLM agent sessions, from your browser",
+  tagline: "An open-source managed agent harness",
   githubUrl: "https://github.com/blossomstack/horsie",
   /**
    * The documentation site. It is built from `docs/` in the horsie repo and

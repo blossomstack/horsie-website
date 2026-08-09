@@ -1,8 +1,9 @@
 # horsie-website
 
 The marketing landing page for
-[horsie](https://github.com/blossomstack/horsie) — a self-hosted web app for
-running LLM agents as durable, browser-based chat sessions.
+[horsie](https://github.com/blossomstack/horsie) — an open-source managed agent
+harness. Durable sessions, a sandbox per session, and unattended runs, on
+infrastructure you own.
 
 Deployed to [horsie.dev](https://horsie.dev).
 
