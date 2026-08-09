@@ -1,1 +1,7 @@
-/*   /index.html   200
+# Documentation moved to its own site, built from the horsie repo.
+# Ordered before the SPA fallback: _redirects rules match top-down.
+/docs        https://docs.horsie.dev/            301
+/docs/*      https://docs.horsie.dev/:splat      301
+
+# BrowserRouter needs every other path served the app shell.
+/*           /index.html                         200

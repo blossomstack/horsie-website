@@ -1,26 +1,45 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@import "@fontsource-variable/archivo";
+@import "@fontsource-variable/martian-mono";
 
+/*
+ * horsie's design tokens.
+ *
+ * Source of truth is `DESIGN.md` at the root of the horsie repo, which the
+ * product UI and docs.horsie.dev both derive from. This file is a copy, kept
+ * deliberately literal so a diff against DESIGN.md is readable — change it
+ * there first.
+ *
+ * The palette is a dark instrument panel: a near-black chassis, warm off-white
+ * legends, one orange accent. Nothing else earns a hue.
+ */
 @theme {
-  --font-sans:
-    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Archivo Variable", system-ui, -apple-system, sans-serif;
   --font-mono:
-    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    "Martian Mono Variable", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
     monospace;
 
-  /* Brand accent (warm amber, a nod to the horsie name) */
-  --color-brand-50: #fffbeb;
-  --color-brand-100: #fef3c7;
-  --color-brand-200: #fde68a;
-  --color-brand-300: #fcd34d;
-  --color-brand-400: #fbbf24;
-  --color-brand-500: #f59e0b;
-  --color-brand-600: #d97706;
-  --color-brand-700: #b45309;
-  --color-brand-800: #92400e;
-  --color-brand-900: #78350f;
-  --color-brand-950: #451a03;
+  /* Surfaces */
+  --color-chassis: oklch(0.19 0.005 255);
+  --color-panel: oklch(0.235 0.006 255);
+  --color-panel-raised: oklch(0.285 0.007 255);
+  --color-screen: oklch(0.155 0.006 255);
+
+  /* Rules */
+  --color-rule: oklch(0.325 0.008 255);
+  --color-rule-strong: oklch(0.43 0.01 255);
+
+  /* Text */
+  --color-legend: oklch(0.93 0.008 90);
+  --color-legend-dim: oklch(0.71 0.012 90);
+  --color-legend-faint: oklch(0.655 0.013 90);
+
+  /* Accent */
+  --color-orange: oklch(0.688 0.196 42);
+  --color-orange-hover: oklch(0.735 0.19 42);
+  --color-orange-ink: oklch(0.19 0.02 42);
+  --color-orange-quiet: oklch(0.32 0.075 42);
 }
 
 html {
@@ -28,5 +47,12 @@ html {
 }
 
 body {
-  @apply bg-zinc-950 text-zinc-100 antialiased;
+  @apply bg-chassis text-legend antialiased;
+}
+
+/* Martian Mono runs wide; the product narrows it rather than shrinking it. */
+code,
+kbd,
+pre {
+  font-variation-settings: "wdth" 87.5;
 }

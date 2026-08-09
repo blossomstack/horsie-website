@@ -1,25 +1,24 @@
 # horsie-website
 
-The marketing landing page and documentation site for
-[Horsie](https://github.com/blossomstack/horsie) — a self-hosted web app for
-running LLM agents as durable, browser-based chat sessions. This site will
-also become the entry point to the hosted horsie portal (TBD).
-
-Docs pages here are a light orientation only; the full user guide lives in
-the [repo's `docs/guide/`](https://github.com/blossomstack/horsie/tree/main/docs/guide)
-and isn't duplicated here.
+The marketing landing page for
+[horsie](https://github.com/blossomstack/horsie) — a self-hosted web app for
+running LLM agents as durable, browser-based chat sessions.
 
 Deployed to [horsie.dev](https://horsie.dev).
+
+**Documentation is not here.** It lives at
+[docs.horsie.dev](https://docs.horsie.dev), built from `docs/` in the horsie
+repository so that a behaviour change and its documentation land in the same
+commit. `/docs*` on this site redirects there — see `public/_redirects`.
 
 ## Stack
 
 - **Vite 7** + **React 19** + **TypeScript**
-- **Tailwind CSS 4** (with `@tailwindcss/typography` for docs)
+- **Tailwind CSS 4**
 - **React Router 7**
-- **react-markdown** + remark-gfm for docs content
 - **Bun** as package manager
 
-Mirrors the toolchain and conventions of `horsie/web`.
+Mirrors the toolchain and conventions of `horsie/clients/web`.
 
 ## Development
 
@@ -35,33 +34,27 @@ make check    # lint + build, run before committing
 
 ```
 ├── src/
-│   ├── components/     # Shared UI (Layout, header/footer)
-│   ├── content/docs/   # Docs pages as markdown (register in src/lib/docs.ts)
-│   ├── lib/            # Site config, docs loader, utilities
-│   └── pages/          # Landing, Docs
+│   ├── components/     # Layout: header and footer
+│   ├── lib/            # Site config and docs links, utilities
+│   └── pages/          # Landing
+├── public/_redirects   # /docs* -> docs.horsie.dev, plus the SPA fallback
 ├── index.html
 ├── vite.config.ts
 └── Makefile
 ```
 
-## Adding a docs page
+## Design tokens
 
-1. Create `src/content/docs/<slug>.md`.
-2. Add `{ slug, title }` to `DOC_ORDER` in `src/lib/docs.ts`.
-
-The page is then available at `/docs/<slug>`.
+`src/index.css` carries a copy of horsie's palette and type scale. The source
+of truth is `DESIGN.md` at the root of the horsie repository, which the product
+UI and docs.horsie.dev both derive from — change it there first, then copy.
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds and runs `wrangler pages deploy` on
-every push to `main`, direct-upload to the `horsie-website` Cloudflare Pages
-project (no Cloudflare git-integration — see `ops` repo's
-`iac/cloudflare/horsie-website.tf` for the project, `horsie.dev` custom
-domain, and the scoped deploy token).
+`.github/workflows/deploy.yml` builds and runs `wrangler pages deploy` on every
+push to `main`, direct-upload to the `horsie-website` Cloudflare Pages project.
+Cloudflare's git integration is not used — its GitHub App is not authorized for
+the organisation.
 
-## Notes
-
-- The "Portal" nav item is a placeholder until the hosted portal's location is
-  decided; set `portalUrl` in `src/lib/config.ts` to enable it.
-- The site uses `BrowserRouter`, so static hosting needs a SPA fallback
-  (rewrite all paths to `index.html`) — handled by `public/_redirects`.
+The site uses `BrowserRouter`, so static hosting needs a SPA fallback;
+`public/_redirects` handles it, after the docs redirects.
