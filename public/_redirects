@@ -1,7 +1,15 @@
 # Documentation moved to its own site, built from the horsie repo.
-# Ordered before the SPA fallback: _redirects rules match top-down.
-/docs        https://docs.horsie.dev/            301
-/docs/*      https://docs.horsie.dev/:splat      301
+# Rules match top-down, so the two old page URLs come before the catch-all and
+# the catch-all comes before the SPA fallback.
+#
+# The old site had exactly two doc pages and its paths share no shape with the
+# new ones, so a path-preserving splat here would 301 every old link to a 404 —
+# which it did. Map the two that existed, and send anything else to the docs
+# home rather than to a URL invented from the old path.
+/docs/introduction   https://docs.horsie.dev/start-here/what-horsie-is/          301
+/docs/architecture   https://docs.horsie.dev/internals/sessions-and-durability/  301
+/docs                https://docs.horsie.dev/                                    301
+/docs/*              https://docs.horsie.dev/                                    301
 
 # BrowserRouter needs every other path served the app shell.
-/*           /index.html                         200
+/*                   /index.html                                                 200
