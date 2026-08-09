@@ -1,12 +1,24 @@
 /** Central place for site-wide links and constants. */
 export const SITE = {
-  name: "Horsie",
+  name: "horsie",
   tagline: "Self-hosted LLM agent sessions, from your browser",
   githubUrl: "https://github.com/blossomstack/horsie",
-  docsUrl: "https://github.com/blossomstack/horsie/tree/main/docs/guide",
   /**
-   * Portal (the hosted horsie app) URL.
-   * TODO: portal deployment is undecided — update once it exists.
+   * The documentation site. It is built from `docs/` in the horsie repo and
+   * deployed to its own Cloudflare Pages project, so that a behaviour change
+   * and its documentation land in the same commit.
    */
-  portalUrl: null as string | null,
+  docsUrl: "https://docs.horsie.dev",
+} as const;
+
+/** Deep links into the docs, used by the nav and the landing page. */
+export const DOCS = {
+  quickstart: `${SITE.docsUrl}/start-here/quickstart/`,
+  whatItIs: `${SITE.docsUrl}/start-here/what-horsie-is/`,
+  deploying: `${SITE.docsUrl}/operating/deploying/`,
+  localRuntime: `${SITE.docsUrl}/operating/local-runtime/`,
+  cloudVendors: `${SITE.docsUrl}/operating/cloud-vendors/`,
+  sessions: `${SITE.docsUrl}/using/sessions/`,
+  workflows: `${SITE.docsUrl}/using/workflows/`,
+  internals: `${SITE.docsUrl}/internals/sessions-and-durability/`,
 } as const;
