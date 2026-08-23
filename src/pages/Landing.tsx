@@ -112,6 +112,23 @@ export default function Landing() {
             View on GitHub
           </a>
         </div>
+
+        {/* Two minutes of the real thing, above the argument for it. Nothing
+            below this point is as persuasive as watching a session run. */}
+        <div className="mx-auto mt-16 w-full max-w-4xl overflow-hidden rounded-lg border border-rule bg-panel">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/saoVBeuFrT4"
+            title="horsie — a two-minute walkthrough"
+            loading="lazy"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            className="block aspect-video w-full border-0"
+          />
+        </div>
+        <p className="mx-auto mt-3 max-w-4xl text-sm text-legend-faint">
+          A session end to end, a sandbox on your own machine, and an agent
+          building a workflow that another agent then runs.
+        </p>
       </section>
 
       {/* The argument. Everything else on this page is evidence for it. */}
