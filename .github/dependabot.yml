@@ -1,0 +1,36 @@
+version: 2
+updates:
+  # Site dependencies (React + Vite + Tailwind). `bun`, not `npm`: the lockfile
+  # here is bun.lock and CI installs with --frozen-lockfile, so an npm-ecosystem
+  # update would bump package.json and leave the lockfile behind, reddening
+  # every PR it opened.
+  - package-ecosystem: bun
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "18:00"
+      timezone: "America/Vancouver"
+    open-pull-requests-limit: 10
+    groups:
+      bun-routine:
+        # Group routine minor/patch updates into a single daily PR; majors
+        # (vite/tailwind/react toolchain bumps) open individually for review.
+        update-types:
+          - minor
+          - patch
+        # lucide-react is 0.x, so its "minor" bumps are de-facto breaking.
+        exclude-patterns:
+          - "lucide-react"
+
+  # Keeps the actions used by ci.yml and deploy.yml current.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "18:00"
+      timezone: "America/Vancouver"
+    open-pull-requests-limit: 5
+    groups:
+      all-actions:
+        patterns:
+          - "*"
